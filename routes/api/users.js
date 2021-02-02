@@ -1,33 +1,96 @@
 const express = require("express");
 const router = express.Router();
-const { check, validationResult } = require("express-validator/check");
+const {
+  body,
+  validationResult
+} = require('express-validator');
+const gravatar = require("gravatar");
+const User = require("../../models/User");
+const bcrypt = require("bcryptjs");
 
 /**
  * @route   POST api/user
  * @desc    Register user
  * @access  Public
  */
-router.post("/", (req, res) => {
+router.post("/",
   [
-    check("name", "Please enter a name").not().isEmpty(),
-    check("email", "Please enter a valid email address.").isEmail(),
-    check(
+    body("name", "Please enter a name.").not().isEmpty(),
+    body("email", "Please enter a valid email address.").isEmail(),
+    body(
       "password",
       "Please enter a password with 6 or more characters."
-    ).isLength({ min: 6 }),
+    ).isLength({
+      min: 6
+    }),
   ],
-    (req, res) => {
-      const errors = validationResult(req);
+  async (req, res) => {
+    const errors = validationResult(req);
+    /**
+     * If errors occured, log them and return json containing said errors
+     */
+    if (!errors.isEmpty()) {
+      console.log(errors);
+      return res.status(400).json({
+        errors: errors.array()
+      });
+    }
+
+    const {
+      name,
+      email,
+      password
+    } = req.body;
+
+    try {
       /**
-       * If errors occured, log them and return json containing said errors
+       * Check to see if user exists
        */
-      if (!errors.isEmpty()) {
-        console.log(errors);
-        return res.status(400).json({ errors: errors.array });
+      let user = await User.findOne({
+        email
+      });
+
+      if (user) {
+        return res.status(400).json({
+          errors: [{
+            msg: "User already exists"
+          }]
+        });
       }
-    };
-  console.log(req.body);
-  res.send("User route");
-});
+
+      /**
+       * Get user's profile gravatar
+       */
+      const avatar = gravatar.url(email, {
+        s: "200",
+        r: "pg",
+        d: "mm"
+      });
+
+      user = new User({
+        name,
+        email,
+        avatar,
+        password
+      });
+
+      /**
+       * Encrypt user password
+       */
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+      await user.save();
+
+
+      /**
+       * Return jsonwebtoken
+       */
+      res.send("User registered");
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Server error has occurred");
+    }
+  });
 
 module.exports = router;
