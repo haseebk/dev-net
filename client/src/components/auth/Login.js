@@ -2,7 +2,6 @@ import React, { Fragment, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "../../actions/auth";
-import { setAlert } from "../../actions/alert";
 import PropTypes from "prop-types";
 
 const Login = ({ setAlert, login, isAuthenticated }) => {
@@ -62,7 +61,6 @@ const Login = ({ setAlert, login, isAuthenticated }) => {
 };
 
 Login.propTypes = {
-  setAlert: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
 };
@@ -71,4 +69,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, { setAlert, login })(Login);
+export default connect(mapStateToProps, { login })(Login);

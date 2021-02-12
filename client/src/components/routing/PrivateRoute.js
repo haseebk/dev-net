@@ -4,32 +4,24 @@ import { connect } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 import Spinner from "../layout/Spinner";
 
-// const PrivateRoute = ({
-//   component: Component,
-//   auth: { isAuthenticated, loading },
-//   ...rest
-// }) => (
-//   <Route
-//     {...rest}
-//     render={(props) =>
-//       loading ? (
-//         <Spinner />
-//       ) : isAuthenticated ? (
-//         <Component {...props} />
-//       ) : (
-//         <Redirect to="/login" />
-//       )
-//     }
-//   />
-// );
-
-const PrivateRoute = (props) => {
-  if (!props.auth.isAuthenticated && !props.auth.loading) {
-    return <Redirect to="/login" />;
-  } else {
-    return <Route exact path={props.path} component={props.component} />;
-  }
-};
+const PrivateRoute = ({
+  component: Component,
+  auth: { isAuthenticated, loading },
+  ...rest
+}) => (
+  <Route
+    {...rest}
+    render={(props) =>
+      loading ? (
+        <Spinner />
+      ) : isAuthenticated ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to="/login" />
+      )
+    }
+  />
+);
 
 PrivateRoute.propTypes = { auth: PropTypes.object.isRequired };
 
