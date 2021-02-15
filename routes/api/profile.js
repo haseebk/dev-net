@@ -287,13 +287,14 @@ router.get("/github/:username", async (req, res) => {
     );
     const headers = {
       "user-agent": "node.js",
-      Authorization: `token ${config.get("githubToken")}`,
+      Authorization: `token ${config.get("githubSecret")}`,
     };
 
     const gitHubResponse = await axios.get(uri, { headers });
     return res.json(gitHubResponse.data);
   } catch (err) {
     console.error(err.message);
+    console.log("this is triggering");
     return res.status(404).json({ msg: "No Github profile found" });
   }
 });
