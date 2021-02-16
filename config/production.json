@@ -1,0 +1,6 @@
+{
+    "mongoURI": "***REMOVED***",
+    "jwtSecret": "***REMOVED***",
+    "githubClientId": "***REMOVED***",
+    "githubSecret": "***REMOVED***"
+}
