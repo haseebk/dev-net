@@ -1,6 +1,10 @@
 # Config
 config/default.json
 
+# Secrets
+secrets.txt
+bfg-1.13.2.jar
+
 # Logs
 logs
 *.log
