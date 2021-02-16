@@ -24,6 +24,7 @@
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.3",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.9.2",
     "gravatar": "^1.8.1",
